@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eda360e57661bdb44a898901c23005b4",
+    "content-hash": "fbae24c0b4cc493f8f60b23b98f6f841",
     "packages": [
         {
             "name": "berlioz/config",
@@ -1743,13 +1743,13 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "berlioz/core": 20,
-        "berlioz/utils": 20
+        "berlioz/core": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1"
+        "php": "^7.1",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {

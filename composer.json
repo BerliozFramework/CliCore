@@ -24,11 +24,10 @@
   "require": {
     "php": "^7.1",
     "ext-json": "*",
-    "berlioz/core": "@dev",
-    "berlioz/utils": "@dev"
+    "berlioz/core": "@dev"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.2"
+    "phpunit/phpunit": "^7.3"
   },
   "provide": {
     "psr/container-implementation": "^1.0",
