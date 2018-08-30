@@ -1,1 +1,1 @@
-# CliCore
+# Berlioz Framework CLI Core

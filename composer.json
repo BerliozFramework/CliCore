@@ -1,0 +1,48 @@
+{
+  "name": "berlioz/cli-core",
+  "description": "Berlioz Framework CLI Core",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "MIT",
+  "homepage": "http://www.berlioz-framework.com",
+  "authors": [
+    {
+      "name": "Ronan Giron",
+      "email": "ronan.giron@berlioz-framework.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Berlioz\\CliCore\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Berlioz\\CliCore\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*",
+    "berlioz/core": "@dev",
+    "berlioz/utils": "@dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.2"
+  },
+  "provide": {
+    "psr/container-implementation": "^1.0",
+    "psr/log-implementation": "^1.0",
+    "psr/simple-cache-implementation": "^1.0"
+  },
+  "bin": [
+    "berlioz"
+  ],
+  "config": {
+    "platform": {
+      "php": "7.1.0"
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}

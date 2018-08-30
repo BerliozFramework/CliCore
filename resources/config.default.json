@@ -1,0 +1,6 @@
+{
+  "commands": {
+    "berlioz:cache-clear": "\\Berlioz\\CliCore\\Command\\Berlioz\\CacheClearCommand",
+    "berlioz:config": "\\Berlioz\\CliCore\\Command\\Berlioz\\ConfigCommand"
+  }
+}
