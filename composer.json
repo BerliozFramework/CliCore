@@ -39,7 +39,7 @@
   ],
   "config": {
     "platform": {
-      "php": "7.1.0"
+      "php": "7.1"
     },
     "optimize-autoloader": true,
     "sort-packages": true
