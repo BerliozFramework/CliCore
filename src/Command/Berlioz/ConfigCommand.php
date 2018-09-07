@@ -20,9 +20,8 @@ use Berlioz\CliCore\App\CliAppAwareTrait;
 use Berlioz\CliCore\App\CliArgs;
 use Berlioz\CliCore\Command\AbstractCommand;
 use Berlioz\CliCore\Command\CommandArg;
-use Berlioz\CliCore\Exception\CommandException;
 
-class ConfigCOmmand extends AbstractCommand implements CliAppAwareInterface
+class ConfigCommand extends AbstractCommand implements CliAppAwareInterface
 {
     use CliAppAwareTrait;
 
