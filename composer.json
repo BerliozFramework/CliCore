@@ -4,11 +4,11 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "license": "MIT",
-  "homepage": "http://www.berlioz-framework.com",
+  "homepage": "http://getberlioz.com",
   "authors": [
     {
       "name": "Ronan Giron",
-      "email": "ronan.giron@berlioz-framework.com"
+      "email": "ronan@getberlioz.com"
     }
   ],
   "autoload": {
@@ -24,10 +24,11 @@
   "require": {
     "php": "^7.1",
     "ext-json": "*",
-    "berlioz/core": "@dev"
+    "ext-mbstring": "*",
+    "berlioz/core": "dev-develop"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.3"
+    "phpunit/phpunit": "^7.5"
   },
   "provide": {
     "psr/container-implementation": "^1.0",
@@ -38,10 +39,8 @@
     "berlioz"
   ],
   "config": {
-    "platform": {
-      "php": "7.1"
-    },
-    "optimize-autoloader": true,
-    "sort-packages": true
+    "berlioz": {
+      "package": "Berlioz\\CliCore\\CliCorePackage"
+    }
   }
 }

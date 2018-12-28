@@ -16,6 +16,11 @@ namespace Berlioz\CliCore\App;
 
 use Berlioz\CliCore\Command\CommandInterface;
 
+/**
+ * Class CliArgs.
+ *
+ * @package Berlioz\CliCore\App
+ */
 class CliArgs
 {
     /** @var array CLI args */

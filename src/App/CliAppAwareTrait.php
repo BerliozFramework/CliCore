@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\App;
 
+/**
+ * Trait CliAppAwareTrait.
+ *
+ * @package Berlioz\CliCore\App
+ */
 trait CliAppAwareTrait
 {
     /** @var \Berlioz\CliCore\App\CliApp Application */

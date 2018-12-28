@@ -12,28 +12,24 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\Command;
+namespace Berlioz\CliCore;
+
+use Berlioz\Core\Package\AbstractPackage;
 
 /**
- * Class AbstractCommand.
+ * Class CliCorePackage.
  *
- * @package Berlioz\CliCore\Command
+ * @package Berlioz\CliCore
  */
-abstract class AbstractCommand implements CommandInterface
+class CliCorePackage extends AbstractPackage
 {
     /**
      * @inheritdoc
+     * @throws \Berlioz\Core\Exception\BerliozException
      */
-    public static function getDescription(): ?string
+    public function register()
     {
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getArgs(): array
-    {
-        return [];
+        // Merge configuration
+        $this->mergeConfig(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources', 'config.default.json']));
     }
 }

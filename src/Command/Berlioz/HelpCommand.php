@@ -22,11 +22,11 @@ use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
 
 /**
- * Class ConfigCommand.
+ * Class HelpCommand.
  *
  * @package Berlioz\CliCore\Command\Berlioz
  */
-class ConfigCommand extends AbstractCommand implements CoreAwareInterface
+class HelpCommand extends AbstractCommand implements CoreAwareInterface
 {
     use CoreAwareTrait;
 
@@ -45,15 +45,7 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
      */
     public static function getDescription(): ?string
     {
-        return 'Show merged JSON configuration';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getArgs(): array
-    {
-        return [new CommandArg('f', 'filter', 'Filter', true)];
+        return 'This help';
     }
 
     /**
@@ -63,10 +55,20 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
      */
     public function run(CliArgs $args)
     {
-        if (!is_string($filter = $args->getOptionValue('f', 'filter')) || empty($filter)) {
-            $filter = null;
-        }
+        $commands = $this->getCore()->getConfig()->get('commands');
 
-        print json_encode($this->getCore()->getConfig()->get($filter), JSON_PRETTY_PRINT);
+        print "Available commands:" . PHP_EOL;
+
+        $commandsLength = array_map(function ($value) {
+            return mb_strlen($value);
+        }, array_keys($commands));
+        $maxCommandLength = max($commandsLength);
+
+        /** @var \Berlioz\CliCore\Command\CommandInterface $class */
+        foreach ($commands as $command => $class) {
+            print sprintf('    %s    %s' . PHP_EOL,
+                          str_pad($command, $maxCommandLength),
+                          $class::getDescription());
+        }
     }
 }

@@ -16,6 +16,11 @@ namespace Berlioz\CliCore\Exception;
 
 use Berlioz\Core\Exception\BerliozException;
 
+/**
+ * Class CommandException.
+ *
+ * @package Berlioz\CliCore\Exception
+ */
 class CommandException extends BerliozException
 {
 }

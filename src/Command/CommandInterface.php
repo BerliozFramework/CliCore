@@ -16,8 +16,20 @@ namespace Berlioz\CliCore\Command;
 
 use Berlioz\CliCore\App\CliArgs;
 
+/**
+ * Interface CommandInterface.
+ *
+ * @package Berlioz\CliCore\Command
+ */
 interface CommandInterface
 {
+    /**
+     * Get description.
+     *
+     * @return string|null
+     */
+    public static function getDescription(): ?string;
+
     /**
      * Get args.
      *

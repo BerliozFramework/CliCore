@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\Command;
 
+/**
+ * Class CommandArg.
+ *
+ * @package Berlioz\CliCore\Command
+ */
 class CommandArg
 {
     protected $short_name;

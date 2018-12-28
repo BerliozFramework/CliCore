@@ -17,30 +17,15 @@ namespace Berlioz\CliCore\App;
 use Berlioz\CliCore\Command\CommandInterface;
 use Berlioz\CliCore\Exception\CommandException;
 use Berlioz\Core\App\AbstractApp;
-use Berlioz\Core\Config;
 use Berlioz\Core\Debug;
 
+/**
+ * Class CliApp.
+ *
+ * @package Berlioz\CliCore\App
+ */
 class CliApp extends AbstractApp
 {
-    //////////////
-    /// CONFIG ///
-    //////////////
-
-    /**
-     * @inheritdoc
-     */
-    public function getConfig(): ?Config
-    {
-        if (!$this->isConfigInitialized()) {
-            parent::getConfig()->extendsJson(implode(DIRECTORY_SEPARATOR,
-                                                     [__DIR__, '..', '..', 'resources', 'config.default.json']),
-                                             true,
-                                             true);
-        }
-
-        return parent::getConfig();
-    }
-
     ///////////////
     /// HANDLER ///
     ///////////////
@@ -53,16 +38,14 @@ class CliApp extends AbstractApp
     public function handle(array $argv)
     {
         try {
-            if (!array_key_exists(1, $argv)) {
-                throw new CommandException('Missing command name');
-            }
+            $commandName = $argv[1] ?? 'berlioz:help';
 
-            $commands = $this->getConfig()->get('commands', []);
-            if (!array_key_exists($argv[1], $commands)) {
+            $commands = $this->getCore()->getConfig()->get('commands', []);
+            if (!array_key_exists($commandName, $commands)) {
                 throw new CommandException(sprintf('Command "%s" not found', $argv[1]));
             }
 
-            $command = $commands[$argv[1]];
+            $command = $commands[$commandName];
 
             // Create instance of command and invoke method
             try {
@@ -74,7 +57,8 @@ class CliApp extends AbstractApp
 
                 // Create instance of command
                 /** @var \Berlioz\CliCore\Command\CommandInterface $command */
-                $command = $this->getServiceContainer()
+                $command = $this->getCore()
+                                ->getServiceContainer()
                                 ->getInstantiator()
                                 ->newInstanceOf($command);
 
@@ -84,7 +68,7 @@ class CliApp extends AbstractApp
                 // Run command
                 $command->run($cliArgs);
             } finally {
-                $this->getDebug()->getTimeLine()->addActivity($commandActivity->end());
+                $this->getCore()->getDebug()->getTimeLine()->addActivity($commandActivity->end());
             }
         } catch (\Throwable $e) {
             if ($e instanceof CommandException) {

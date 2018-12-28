@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\App;
 
+/**
+ * Interface CliAppAwareInterface.
+ *
+ * @package Berlioz\CliCore\App
+ */
 interface CliAppAwareInterface
 {
     /**
