@@ -137,13 +137,13 @@ class CliArgs
     /**
      * Get value (who are not value of option).
      *
-     * @param int $i Value position
+     * @param int $pos Value position
      *
      * @return null|string
      */
-    public function getValue(int $i): ?string
+    public function getValue(int $pos): ?string
     {
-        return $this->values[$i] ?? null;
+        return $this->values[$pos] ?? null;
     }
 
     /**
