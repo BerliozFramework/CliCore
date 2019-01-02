@@ -73,9 +73,11 @@ class CliApp extends AbstractApp
         } catch (\Throwable $e) {
             if ($e instanceof CommandException) {
                 fwrite(STDERR, $e->getMessage() . PHP_EOL);
-            } else {
-                fwrite(STDERR, (string) $e . PHP_EOL);
+
+                return;
             }
+
+            fwrite(STDERR, (string) $e . PHP_EOL);
         }
     }
 }
