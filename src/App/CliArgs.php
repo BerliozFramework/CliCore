@@ -50,13 +50,15 @@ class CliArgs
         for ($i = 2; $i < $nbArgs; $i++) {
             if (substr($this->argv[$i], 0, 2) == '--') {
                 $cliOptions[substr($this->argv[$i], 2)] = $i;
-            } else {
-                if (substr($this->argv[$i], 0, 1) == '-') {
-                    $cliOptions[substr($this->argv[$i], 1)] = $i;
-                } else {
-                    $cliValues[$i] = $this->argv[$i];
-                }
+                continue;
             }
+
+            if (substr($this->argv[$i], 0, 1) == '-') {
+                $cliOptions[substr($this->argv[$i], 1)] = $i;
+                continue;
+            }
+
+            $cliValues[$i] = $this->argv[$i];
         }
 
         // Check for command args
