@@ -29,6 +29,7 @@ foreach ($autoloadFiles as $file) {
 
 if (is_null($autoloadFile)) {
     fwrite(STDERR, 'You must install Berlioz/CliCore with Composer, looks at https://getcomposer.org/ to do that.' . PHP_EOL);
+    exit(1);
 }
 
 // Load autoload file of Composer
@@ -39,6 +40,8 @@ try {
     // App
     $app = new \Berlioz\CliCore\App\CliApp();
     $app->handle($argv);
+    exit(0);
 } catch (\Throwable $e) {
     fwrite(STDERR, rtrim((string) $e) . PHP_EOL);
+    exit(1);
 }
