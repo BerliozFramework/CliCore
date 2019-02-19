@@ -30,16 +30,34 @@ class CliArgs
     /** @var array Values */
     private $values = [];
 
+    /**
+     * CliArgs constructor.
+     *
+     * @param array $argv
+     */
     public function __construct(array $argv)
     {
         $this->argv = $argv;
     }
 
+    /**
+     * Get command name.
+     *
+     * @return string|null
+     */
     public function getCommandName(): ?string
     {
         return $this->argv[1] ?? null;
     }
 
+    /**
+     * Handle command args.
+     *
+     * @param \Berlioz\CliCore\Command\CommandInterface $command
+     *
+     * @return void
+     * @throws \ArgumentCountError
+     */
     public function handle(CommandInterface $command)
     {
         $cliOptions = [];
