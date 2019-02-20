@@ -24,6 +24,14 @@ abstract class AbstractCommand implements CommandInterface
     /**
      * @inheritdoc
      */
+    public static function getShortDescription(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function getDescription(): ?string
     {
         return null;
@@ -32,7 +40,15 @@ abstract class AbstractCommand implements CommandInterface
     /**
      * @inheritdoc
      */
-    public function getArgs(): array
+    public static function getOptions(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getOperands(): array
     {
         return [];
     }

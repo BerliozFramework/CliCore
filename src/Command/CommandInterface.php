@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\Command;
 
-use Berlioz\CliCore\App\CliArgs;
+use GetOpt\GetOpt;
 
 /**
  * Interface CommandInterface.
@@ -24,6 +24,13 @@ use Berlioz\CliCore\App\CliArgs;
 interface CommandInterface
 {
     /**
+     * Get short description.
+     *
+     * @return string|null
+     */
+    public static function getShortDescription(): ?string;
+
+    /**
      * Get description.
      *
      * @return string|null
@@ -31,20 +38,31 @@ interface CommandInterface
     public static function getDescription(): ?string;
 
     /**
-     * Get args.
+     * Get options.
      *
-     * Must return an array of arguments.
+     * Must return an array of options.
      *
-     * @return \Berlioz\CliCore\Command\CommandArg[]
+     * @return \GetOpt\Option[]
+     * @see http://getopt-php.github.io/getopt-php/options.html
      */
-    public function getArgs(): array;
+    public static function getOptions(): array;
+
+    /**
+     * Get operands.
+     *
+     * Must return an array of operands.
+     *
+     * @return \GetOpt\Operand[]
+     * @see http://getopt-php.github.io/getopt-php/operands.html
+     */
+    public static function getOperands(): array;
 
     /**
      * Run command.
      *
-     * @param \Berlioz\CliCore\App\CliArgs $args
+     * @param \GetOpt\GetOpt $getOpt
      *
      * @return void
      */
-    public function run(CliArgs $args);
+    public function run(GetOpt $getOpt);
 }

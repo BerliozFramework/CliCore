@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\Command\Berlioz;
 
-use Berlioz\CliCore\App\CliArgs;
 use Berlioz\CliCore\Command\AbstractCommand;
 use Berlioz\CliCore\Exception\CommandException;
 use Berlioz\Core\Core;
 use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
+use GetOpt\GetOpt;
 
 /**
  * Class CacheClearCommand.
@@ -43,30 +43,23 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * @inheritdoc
      */
-    public static function getDescription(): ?string
+    public static function getShortDescription(): ?string
     {
         return 'Clear cache of Berlioz Framework';
     }
 
     /**
      * @inheritdoc
-     */
-    public function getArgs(): array
-    {
-        return [];
-    }
-
-    /**
-     * @inheritdoc
      * @throws \Berlioz\Core\Exception\BerliozException
+     * @throws \Berlioz\CliCore\Exception\CommandException
      */
-    public function run(CliArgs $args)
+    public function run(GetOpt $getOpt)
     {
         if (empty($cacheManager = $this->getCore()->getCacheManager())) {
             throw new CommandException('Missing cache service');
         }
 
-        print "Cache clear...";
+        print "Cache clear of Berlioz...";
 
         try {
             $cacheManager->clear();

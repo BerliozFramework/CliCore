@@ -25,7 +25,8 @@
     "php": "^7.1",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "berlioz/core": "dev-develop"
+    "berlioz/core": "dev-develop",
+    "ulrichsg/getopt-php": "^3.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5"

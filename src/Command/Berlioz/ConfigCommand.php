@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore\Command\Berlioz;
 
-use Berlioz\CliCore\App\CliArgs;
 use Berlioz\CliCore\Command\AbstractCommand;
-use Berlioz\CliCore\Command\CommandArg;
 use Berlioz\Core\Core;
 use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
+use GetOpt\GetOpt;
+use GetOpt\Option;
 
 /**
  * Class ConfigCommand.
@@ -43,7 +43,7 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * @inheritdoc
      */
-    public static function getDescription(): ?string
+    public static function getShortDescription(): ?string
     {
         return 'Show merged JSON configuration';
     }
@@ -51,9 +51,13 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * @inheritdoc
      */
-    public function getArgs(): array
+    public static function getOptions(): array
     {
-        return [new CommandArg('f', 'filter', 'Filter', true)];
+        return [
+            (new Option('f', 'filter', GetOpt::OPTIONAL_ARGUMENT))
+                ->setDescription('Filter')
+                ->setValidation('is_string'),
+        ];
     }
 
     /**
@@ -61,9 +65,9 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
      * @throws \Berlioz\Config\Exception\ConfigException
      * @throws \Berlioz\Core\Exception\BerliozException
      */
-    public function run(CliArgs $args)
+    public function run(GetOpt $getOpt)
     {
-        if (!is_string($filter = $args->getOptionValue('f', 'filter')) || empty($filter)) {
+        if (empty($filter = $getOpt->getOption('f'))) {
             $filter = null;
         }
 
