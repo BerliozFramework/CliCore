@@ -18,7 +18,6 @@ use Berlioz\CliCore\Command\CommandInterface;
 use Berlioz\CliCore\Exception\CommandException;
 use Berlioz\Core\App\AbstractApp;
 use Berlioz\Core\Debug;
-use GetOpt\ArgumentException;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Option;
@@ -81,46 +80,42 @@ class CliApp extends AbstractApp
 
     /**
      * Handle.
+     *
+     * @param array|string|\GetOpt\Argument|null $arguments
+     *
+     * @throws \Berlioz\CliCore\Exception\CommandException
+     * @throws \GetOpt\ArgumentException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \Throwable
      */
-    public function handle()
+    public function handle($arguments = null)
     {
+        $getOpt = new GetOpt();
+        $getOpt->addOption(Option::create(null, 'help')->setDescription('Shows this help'));
+        $getOpt->addCommands($this->getCommands());
+        $getOpt->process($arguments);
+
+        if ($getOpt->getOption('help') || is_null($command = $getOpt->getCommand())) {
+            print $getOpt->getHelpText();
+            exit(0);
+        }
+
+        // Create instance of command and invoke method
         try {
-            $getOpt = new GetOpt();
-            $getOpt->addOption(Option::create(null, 'help')->setDescription('Shows this help'));
-            $getOpt->addCommands($this->getCommands());
-            $getOpt->process();
+            $commandActivity = (new Debug\Activity('Command'))->start();
 
-            if ($getOpt->getOption('help') || is_null($command = $getOpt->getCommand())) {
-                print $getOpt->getHelpText();
-                exit(0);
-            }
+            // Create instance of command
+            /** @var \Berlioz\CliCore\Command\CommandInterface $commandObj */
+            $commandObj =
+                $this->getCore()
+                     ->getServiceContainer()
+                     ->getInstantiator()
+                     ->newInstanceOf($command->getHandler());
 
-            // Create instance of command and invoke method
-            try {
-                $commandActivity = (new Debug\Activity('Command'))->start();
-
-                // Create instance of command
-                /** @var \Berlioz\CliCore\Command\CommandInterface $commandObj */
-                $commandObj =
-                    $this->getCore()
-                         ->getServiceContainer()
-                         ->getInstantiator()
-                         ->newInstanceOf($command->getHandler());
-
-                // Run command
-                $commandObj->run($getOpt);
-            } finally {
-                $this->getCore()->getDebug()->getTimeLine()->addActivity($commandActivity->end());
-            }
-        } catch (ArgumentException $e) {
-            fwrite(STDERR, $e->getMessage() . PHP_EOL);
-            exit(1);
-        } catch (CommandException $e) {
-            fwrite(STDERR, $e->getMessage() . PHP_EOL);
-            exit(1);
-        } catch (\Throwable $e) {
-            fwrite(STDERR, (string) $e . PHP_EOL);
-            exit(1);
+            // Run command
+            $commandObj->run($getOpt);
+        } finally {
+            $this->getCore()->getDebug()->getTimeLine()->addActivity($commandActivity->end());
         }
     }
 }
