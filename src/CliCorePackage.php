@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore;
 
+use Berlioz\Config\ExtendedJsonConfig;
 use Berlioz\Core\Package\AbstractPackage;
 
 /**
@@ -23,13 +24,16 @@ use Berlioz\Core\Package\AbstractPackage;
  */
 class CliCorePackage extends AbstractPackage
 {
+    ///////////////
+    /// PACKAGE ///
+    ///////////////
+
     /**
      * @inheritdoc
-     * @throws \Berlioz\Core\Exception\BerliozException
+     * @throws \Berlioz\Config\Exception\ConfigException
      */
-    public function register()
+    public static function config()
     {
-        // Merge configuration
-        $this->mergeConfig(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources', 'config.default.json']));
+        return new ExtendedJsonConfig(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources', 'config.default.json']), true);
     }
 }
