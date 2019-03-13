@@ -56,6 +56,9 @@ class CliApp extends AbstractApp
             if (!is_string($command)) {
                 throw new CommandException(sprintf('Command declaration must be a class name'));
             }
+            if (!class_exists($command)) {
+                throw new CommandException(sprintf('Command class "%s" not found', $command));
+            }
             if (!is_a($command, CommandInterface::class, true)) {
                 throw new CommandException(sprintf('Command class "%s" must be implement "%s" interface', $command, CommandInterface::class));
             }
