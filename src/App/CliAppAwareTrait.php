@@ -21,13 +21,13 @@ namespace Berlioz\CliCore\App;
  */
 trait CliAppAwareTrait
 {
-    /** @var \Berlioz\CliCore\App\CliApp Application */
+    /** @var CliApp Application */
     private $app;
 
     /**
      * Get application.
      *
-     * @return \Berlioz\CliCore\App\CliApp|null
+     * @return CliApp|null
      */
     public function getApp(): ?CliApp
     {
@@ -37,7 +37,7 @@ trait CliAppAwareTrait
     /**
      * Set application.
      *
-     * @param \Berlioz\CliCore\App\CliApp $app
+     * @param CliApp $app
      *
      * @return static
      */

@@ -19,7 +19,9 @@ use Berlioz\CliCore\Exception\CommandException;
 use Berlioz\Core\Core;
 use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
+use Berlioz\Core\Exception\BerliozException;
 use GetOpt\GetOpt;
+use Throwable;
 
 /**
  * Class CacheClearCommand.
@@ -33,7 +35,7 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * CacheClearCommand constructor.
      *
-     * @param \Berlioz\Core\Core $core
+     * @param Core $core
      */
     public function __construct(Core $core)
     {
@@ -50,8 +52,8 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Core\Exception\BerliozException
-     * @throws \Berlioz\CliCore\Exception\CommandException
+     * @throws BerliozException
+     * @throws CommandException
      */
     public function run(GetOpt $getOpt)
     {
@@ -65,7 +67,7 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
             $cacheManager->clear();
 
             print " done!" . PHP_EOL;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             print " failed!" . PHP_EOL;
         }
     }

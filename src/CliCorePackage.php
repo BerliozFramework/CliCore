@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\CliCore;
 
+use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Config\ExtendedJsonConfig;
 use Berlioz\Core\Package\AbstractPackage;
 
@@ -30,10 +31,13 @@ class CliCorePackage extends AbstractPackage
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Config\Exception\ConfigException
+     * @throws ConfigException
      */
     public static function config()
     {
-        return new ExtendedJsonConfig(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources', 'config.default.json']), true);
+        return new ExtendedJsonConfig(
+            implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'resources', 'config.default.json']),
+            true
+        );
     }
 }

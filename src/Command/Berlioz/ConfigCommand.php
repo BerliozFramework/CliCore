@@ -15,9 +15,11 @@ declare(strict_types=1);
 namespace Berlioz\CliCore\Command\Berlioz;
 
 use Berlioz\CliCore\Command\AbstractCommand;
+use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Core\Core;
 use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
+use Berlioz\Core\Exception\BerliozException;
 use GetOpt\GetOpt;
 use GetOpt\Option;
 
@@ -33,7 +35,7 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * CacheClearCommand constructor.
      *
-     * @param \Berlioz\Core\Core $core
+     * @param Core $core
      */
     public function __construct(Core $core)
     {
@@ -62,8 +64,8 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Config\Exception\ConfigException
-     * @throws \Berlioz\Core\Exception\BerliozException
+     * @throws ConfigException
+     * @throws BerliozException
      */
     public function run(GetOpt $getOpt)
     {

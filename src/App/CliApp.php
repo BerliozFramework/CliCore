@@ -16,11 +16,17 @@ namespace Berlioz\CliCore\App;
 
 use Berlioz\CliCore\Command\CommandInterface;
 use Berlioz\CliCore\Exception\CommandException;
+use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Core\App\AbstractApp;
 use Berlioz\Core\Debug;
+use Berlioz\Core\Exception\BerliozException;
+use GetOpt\Argument;
+use GetOpt\ArgumentException;
 use GetOpt\Command;
 use GetOpt\GetOpt;
 use GetOpt\Option;
+use Psr\SimpleCache\InvalidArgumentException;
+use Throwable;
 
 /**
  * Class CliApp.
@@ -32,11 +38,11 @@ class CliApp extends AbstractApp
     /**
      * Get commands.
      *
-     * @return \GetOpt\Command[]
-     * @throws \Berlioz\CliCore\Exception\CommandException
-     * @throws \Berlioz\Config\Exception\ConfigException
-     * @throws \Berlioz\Core\Exception\BerliozException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @return Command[]
+     * @throws CommandException
+     * @throws ConfigException
+     * @throws BerliozException
+     * @throws InvalidArgumentException
      */
     private function getCommands(): array
     {
@@ -49,8 +55,8 @@ class CliApp extends AbstractApp
         $commands = $this->getCore()->getConfig()->get('commands', []);
 
         /**
-         * @var string                                    $name
-         * @var \Berlioz\CliCore\Command\CommandInterface $command
+         * @var string $name
+         * @var CommandInterface $command
          */
         foreach ($commands as $name => $command) {
             if (!is_string($command)) {
@@ -60,7 +66,9 @@ class CliApp extends AbstractApp
                 throw new CommandException(sprintf('Command class "%s" not found', $command));
             }
             if (!is_a($command, CommandInterface::class, true)) {
-                throw new CommandException(sprintf('Command class "%s" must be implement "%s" interface', $command, CommandInterface::class));
+                throw new CommandException(
+                    sprintf('Command class "%s" must be implement "%s" interface', $command, CommandInterface::class)
+                );
             }
 
             $commandsList[] =
@@ -84,12 +92,12 @@ class CliApp extends AbstractApp
     /**
      * Handle.
      *
-     * @param array|string|\GetOpt\Argument|null $arguments
+     * @param array|string|Argument|null $arguments
      *
-     * @throws \Berlioz\CliCore\Exception\CommandException
-     * @throws \GetOpt\ArgumentException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \Throwable
+     * @throws CommandException
+     * @throws ArgumentException
+     * @throws InvalidArgumentException
+     * @throws Throwable
      */
     public function handle($arguments = null)
     {
@@ -108,12 +116,12 @@ class CliApp extends AbstractApp
             $commandActivity = (new Debug\Activity('Command'))->start();
 
             // Create instance of command
-            /** @var \Berlioz\CliCore\Command\CommandInterface $commandObj */
+            /** @var CommandInterface $commandObj */
             $commandObj =
                 $this->getCore()
-                     ->getServiceContainer()
-                     ->getInstantiator()
-                     ->newInstanceOf($command->getHandler());
+                    ->getServiceContainer()
+                    ->getInstantiator()
+                    ->newInstanceOf($command->getHandler());
 
             // Run command
             $commandObj->run($getOpt);

@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Berlioz\CliCore\Command;
 
 use GetOpt\GetOpt;
+use GetOpt\Operand;
+use GetOpt\Option;
 
 /**
  * Interface CommandInterface.
@@ -42,7 +44,7 @@ interface CommandInterface
      *
      * Must return an array of options.
      *
-     * @return \GetOpt\Option[]
+     * @return Option[]
      * @see http://getopt-php.github.io/getopt-php/options.html
      */
     public static function getOptions(): array;
@@ -52,7 +54,7 @@ interface CommandInterface
      *
      * Must return an array of operands.
      *
-     * @return \GetOpt\Operand[]
+     * @return Operand[]
      * @see http://getopt-php.github.io/getopt-php/operands.html
      */
     public static function getOperands(): array;
@@ -60,7 +62,7 @@ interface CommandInterface
     /**
      * Run command.
      *
-     * @param \GetOpt\GetOpt $getOpt
+     * @param GetOpt $getOpt
      *
      * @return void
      */

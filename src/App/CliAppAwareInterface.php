@@ -24,14 +24,14 @@ interface CliAppAwareInterface
     /**
      * Get application.
      *
-     * @return \Berlioz\CliCore\App\CliApp|null
+     * @return CliApp|null
      */
     public function getApp(): ?CliApp;
 
     /**
      * Set application.
      *
-     * @param \Berlioz\CliCore\App\CliApp $app
+     * @param CliApp $app
      *
      * @return static
      */
