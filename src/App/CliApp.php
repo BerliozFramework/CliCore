@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2018 Ronan GIRON
+ * @copyright 2020 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -16,6 +16,7 @@ namespace Berlioz\CliCore\App;
 
 use Berlioz\CliCore\Command\CommandInterface;
 use Berlioz\CliCore\Exception\CommandException;
+use Berlioz\Config\ConfigInterface;
 use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Core\App\AbstractApp;
 use Berlioz\Core\Debug;
@@ -36,23 +37,24 @@ use Throwable;
 class CliApp extends AbstractApp
 {
     /**
-     * Get commands.
+     * Create commands from config.
      *
-     * @return Command[]
+     * @param ConfigInterface $config
+     *
+     * @return array
+     * @throws BerliozException
      * @throws CommandException
      * @throws ConfigException
-     * @throws BerliozException
-     * @throws InvalidArgumentException
      */
-    private function getCommands(): array
+    private function createCommandsFromConfig(ConfigInterface $config)
     {
-        // Get from cache if exists
-        if (!is_null($commandsList = $this->getCore()->getCacheManager()->get('berlioz-clicore-commands'))) {
-            return $commandsList;
+        $commands = $config->get('commands', []);
+
+        if (!is_array($commands)) {
+            throw new BerliozException('Bad configuration format, "commands" key must be an array');
         }
 
-        $commandsList = [];
-        $commands = $this->getCore()->getConfig()->get('commands', []);
+        $commandsObjects = [];
 
         /**
          * @var string $name
@@ -71,13 +73,34 @@ class CliApp extends AbstractApp
                 );
             }
 
-            $commandsList[] =
+            $commandsObjects[] =
                 (new Command($name, $command))
                     ->setShortDescription($command::getShortDescription() ?? '')
                     ->setDescription($command::getDescription() ?? $command::getShortDescription() ?? '')
                     ->addOptions($command::getOptions())
                     ->addOperands($command::getOperands());
         }
+
+        return $commandsObjects;
+    }
+
+    /**
+     * Get commands.
+     *
+     * @return Command[]
+     * @throws CommandException
+     * @throws ConfigException
+     * @throws BerliozException
+     * @throws InvalidArgumentException
+     */
+    private function getCommands(): array
+    {
+        // Get from cache if exists
+        if (null !== ($commandsList = $this->getCore()->getCacheManager()->get('berlioz-clicore-commands'))) {
+            return $commandsList;
+        }
+
+        $commandsList = $this->createCommandsFromConfig($this->getCore()->getConfig());
 
         // Save commands list in cache
         $this->getCore()->getCacheManager()->set('berlioz-clicore-commands', $commandsList);
@@ -94,12 +117,13 @@ class CliApp extends AbstractApp
      *
      * @param array|string|Argument|null $arguments
      *
+     * @return int
      * @throws CommandException
      * @throws ArgumentException
      * @throws InvalidArgumentException
      * @throws Throwable
      */
-    public function handle($arguments = null)
+    public function handle($arguments = null): int
     {
         $getOpt = new GetOpt();
         $getOpt->addOption(Option::create(null, 'help')->setDescription('Shows this help'));
@@ -108,7 +132,7 @@ class CliApp extends AbstractApp
 
         if ($getOpt->getOption('help') || is_null($command = $getOpt->getCommand())) {
             print $getOpt->getHelpText();
-            exit(0);
+            return 0;
         }
 
         // Create instance of command and invoke method
@@ -118,13 +142,14 @@ class CliApp extends AbstractApp
             // Create instance of command
             /** @var CommandInterface $commandObj */
             $commandObj =
-                $this->getCore()
+                $this
+                    ->getCore()
                     ->getServiceContainer()
                     ->getInstantiator()
                     ->newInstanceOf($command->getHandler());
 
             // Run command
-            $commandObj->run($getOpt);
+            return $commandObj->run($getOpt);
         } finally {
             $this->getCore()->getDebug()->getTimeLine()->addActivity($commandActivity->end());
         }

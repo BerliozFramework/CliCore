@@ -39,8 +39,7 @@ require $autoloadFile;
 try {
     // App
     $app = new \Berlioz\CliCore\App\CliApp();
-    $app->handle();
-    exit(0);
+    exit($app->handle());
 } catch (\GetOpt\ArgumentException $e) {
     fwrite(STDERR, $e->getMessage() . PHP_EOL);
     exit(1);

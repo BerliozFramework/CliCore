@@ -1,7 +1,8 @@
 {
   "name": "berlioz/cli-core",
-  "type": "library",
   "description": "Berlioz Framework CLI Core",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "license": "MIT",
   "homepage": "http://getberlioz.com",
   "authors": [
@@ -12,21 +13,24 @@
   ],
   "autoload": {
     "psr-4": {
-      "Berlioz\\CliCore\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "/tests/"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Berlioz\\CliCore\\Tests\\": "tests/",
+      "Berlioz\\CliCore\\": "src/",
       "Berlioz\\CliCore\\TestProject\\": "tests/_envTest/src/"
     },
     "exclude-from-classmap": [
       "/tests/_envTest/"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Berlioz\\CliCore\\Tests\\": "tests/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../Core"
+    }
+  ],
   "require": {
     "php": "^7.1",
     "ext-json": "*",

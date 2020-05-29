@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2018 Ronan GIRON
+ * @copyright 2020 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,7 +21,6 @@ use Berlioz\Core\CoreAwareInterface;
 use Berlioz\Core\CoreAwareTrait;
 use Berlioz\Core\Exception\BerliozException;
 use GetOpt\GetOpt;
-use Throwable;
 
 /**
  * Class CacheClearCommand.
@@ -55,7 +54,7 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
      * @throws BerliozException
      * @throws CommandException
      */
-    public function run(GetOpt $getOpt)
+    public function run(GetOpt $getOpt): int
     {
         if (empty($cacheManager = $this->getCore()->getCacheManager())) {
             throw new CommandException('Missing cache service');
@@ -63,12 +62,10 @@ class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
 
         print "Cache clear of Berlioz...";
 
-        try {
-            $cacheManager->clear();
+        $result = $cacheManager->clear();
 
-            print " done!" . PHP_EOL;
-        } catch (Throwable $e) {
-            print " failed!" . PHP_EOL;
-        }
+        print sprintf(' %s!', $result ? 'done' : 'failed') . PHP_EOL;
+
+        return (int)!$result;
     }
 }

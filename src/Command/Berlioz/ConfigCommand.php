@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2018 Ronan GIRON
+ * @copyright 2020 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -65,14 +65,15 @@ class ConfigCommand extends AbstractCommand implements CoreAwareInterface
     /**
      * @inheritdoc
      * @throws ConfigException
-     * @throws BerliozException
      */
-    public function run(GetOpt $getOpt)
+    public function run(GetOpt $getOpt): int
     {
         if (empty($filter = $getOpt->getOption('f'))) {
             $filter = null;
         }
 
         print json_encode($this->getCore()->getConfig()->get($filter), JSON_PRETTY_PRINT);
+
+        return 0;
     }
 }
