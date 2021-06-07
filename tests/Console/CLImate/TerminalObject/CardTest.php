@@ -29,18 +29,15 @@ EOF
         );
         $card->util(new UtilFactory());
 
-        $this->assertEquals(
-            [
-                '                                                                                                                       ',
-                '  Horum adventum praedocti speculationibus fidis rectores militum tessera data sollemni armatos omnes celeri eduxere   ',
-                '  procursu et agiliter praeterito Calycadni fluminis ponte, cuius undarum magnitudo murorum adluit turres, in speciem  ',
-                '   locavere pugnandi. neque tamen exiluit quisquam nec permissus est congredi. formidabatur enim flagrans vesania man  ',
-                '  us et superior numero et ruitura sine respectu salutis in ferrum.                                                    ',
-                '  Homines enim eruditos et sobrios ut infaustos et inutiles vitant, eo quoque accedente quod et nomenclatores adsueti  ',
-                '   haec et talia venditare, mercede accepta lucris quosdam et prandiis inserunt subditicios ignobiles et obscuros.     ',
-                '                                                                                                                       ',
-            ],
-            $card->result()
-        );
+        $result = $card->result();
+
+        $this->assertMatchesRegularExpression('/^\s+$/', $firstLine = array_shift($result));
+        $this->assertMatchesRegularExpression('/^\s+$/', $lastLine = array_pop($result));
+        $this->assertEquals(strlen($firstLine), strlen($lastLine));
+
+        foreach ($result as $line) {
+            $this->assertTrue(str_starts_with($line, '  '));
+            $this->assertTrue(str_ends_with($line, '  '));
+        }
     }
 }
