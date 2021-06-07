@@ -1,20 +1,20 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\CliCore\Tests\App;
+namespace Berlioz\Cli\Core\Tests\App;
 
-use Berlioz\CliCore\App\CliApp;
-use Berlioz\CliCore\App\CliAppAwareTrait;
-use Berlioz\CliCore\Tests\FakeDefaultDirectories;
+use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\App\CliAppAwareTrait;
+use Berlioz\Cli\Core\Tests\FakeDefaultDirectories;
 use Berlioz\Core\Core;
 use PHPUnit\Framework\TestCase;
 
@@ -22,18 +22,23 @@ class CliAppAwareTraitTest extends TestCase
 {
     public function test()
     {
-        $obj = new class {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), false));
+        $trait = new class {
+            use CliAppAwareTrait;
+        };
+        $trait->setApp($app);
+
+        $this->assertTrue($trait->hasApp());
+        $this->assertSame($trait->getApp(), $app);
+    }
+
+    public function testEmpty()
+    {
+        $trait = new class {
             use CliAppAwareTrait;
         };
 
-        $cliApp = new CliApp(new Core(new FakeDefaultDirectories(), false));
-
-        $this->assertFalse($obj->hasApp());
-        $this->assertNull($obj->getApp());
-
-        $obj->setApp($cliApp);
-
-        $this->assertTrue($obj->hasApp());
-        $this->assertSame($cliApp, $obj->getApp());
+        $this->assertFalse($trait->hasApp());
+        $this->assertNull($trait->getApp());
     }
 }

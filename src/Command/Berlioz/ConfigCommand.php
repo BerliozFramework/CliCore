@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,68 +12,50 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\Command\Berlioz;
+namespace Berlioz\Cli\Core\Command\Berlioz;
 
-use Berlioz\CliCore\Command\AbstractCommand;
+use Berlioz\Cli\Core\Command\AbstractCommand;
+use Berlioz\Cli\Core\Command\Argument;
+use Berlioz\Cli\Core\Console\Environment;
+use Berlioz\Cli\Core\Exception\CliException;
 use Berlioz\Config\Exception\ConfigException;
-use Berlioz\Core\Core;
-use Berlioz\Core\CoreAwareInterface;
-use Berlioz\Core\CoreAwareTrait;
-use Berlioz\Core\Exception\BerliozException;
-use GetOpt\GetOpt;
-use GetOpt\Option;
 
 /**
  * Class ConfigCommand.
- *
- * @package Berlioz\CliCore\Command\Berlioz
  */
-class ConfigCommand extends AbstractCommand implements CoreAwareInterface
+#[Argument('filter', prefix: 'f', longPrefix: 'filter', description: 'Filter', required: false)]
+class ConfigCommand extends AbstractCommand
 {
-    use CoreAwareTrait;
-
     /**
-     * CacheClearCommand constructor.
-     *
-     * @param Core $core
+     * @inheritDoc
      */
-    public function __construct(Core $core)
-    {
-        $this->setCore($core);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function getShortDescription(): ?string
+    public static function getDescription(): ?string
     {
         return 'Show merged JSON configuration';
     }
 
     /**
-     * @inheritdoc
-     */
-    public static function getOptions(): array
-    {
-        return [
-            (new Option('f', 'filter', GetOpt::OPTIONAL_ARGUMENT))
-                ->setDescription('Filter')
-                ->setValidation('is_string'),
-        ];
-    }
-
-    /**
-     * @inheritdoc
+     * @inheritDoc
+     * @throws CliException
      * @throws ConfigException
      */
-    public function run(GetOpt $getOpt): int
+    public function run(Environment $env): int
     {
-        if (empty($filter = $getOpt->getOption('f'))) {
-            $filter = null;
+        $filter = $env->getArgument('filter') ?: null;
+
+        if (null === $filter) {
+            $env->console()->out('Configuration:');
+            $env->console()->card(json_encode($this->getApp()->getConfig()->getArrayCopy(), JSON_PRETTY_PRINT));
+            return 0;
         }
 
-        print json_encode($this->getCore()->getConfig()->get($filter), JSON_PRETTY_PRINT);
+        $env->console()->out(sprintf('Configuration at "%s":', $filter));
+        if (false === $this->getApp()->getConfig()->has($filter)) {
+            $env->console()->br()->backgroundRed()->card('No entry.');
+            return 1;
+        }
 
+        $env->console()->card(json_encode($this->getApp()->getConfig()->get($filter), JSON_PRETTY_PRINT));
         return 0;
     }
 }

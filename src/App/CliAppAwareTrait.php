@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,17 +12,14 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\App;
+namespace Berlioz\Cli\Core\App;
 
 /**
  * Trait CliAppAwareTrait.
- *
- * @package Berlioz\CliCore\App
  */
 trait CliAppAwareTrait
 {
-    /** @var CliApp Application */
-    private $app;
+    private CliApp $app;
 
     /**
      * Get application.
@@ -31,7 +28,7 @@ trait CliAppAwareTrait
      */
     public function getApp(): ?CliApp
     {
-        return $this->app;
+        return $this->app ?? null;
     }
 
     /**
@@ -41,7 +38,7 @@ trait CliAppAwareTrait
      *
      * @return static
      */
-    public function setApp(CliApp $app)
+    public function setApp(CliApp $app): static
     {
         $this->app = $app;
 
@@ -55,6 +52,6 @@ trait CliAppAwareTrait
      */
     public function hasApp(): bool
     {
-        return !is_null($this->app);
+        return null !== ($this->app ?? null);
     }
 }

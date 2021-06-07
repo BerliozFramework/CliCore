@@ -1,9 +1,9 @@
 {
   "name": "berlioz/cli-core",
-  "type": "library",
+  "type": "berlioz-package",
   "description": "Berlioz Framework CLI Core",
   "license": "MIT",
-  "homepage": "http://getberlioz.com",
+  "homepage": "https://getberlioz.com",
   "authors": [
     {
       "name": "Ronan Giron",
@@ -12,7 +12,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Berlioz\\CliCore\\": "src/"
+      "Berlioz\\Cli\\Core\\": "src/"
     },
     "exclude-from-classmap": [
       "/tests/"
@@ -20,26 +20,27 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Berlioz\\CliCore\\Tests\\": "tests/",
-      "Berlioz\\CliCore\\TestProject\\": "tests/_envTest/src/"
+      "Berlioz\\Cli\\Core\\Tests\\": "tests/",
+      "Berlioz\\Cli\\Core\\TestProject\\": "tests_env/src/"
     },
     "exclude-from-classmap": [
-      "/tests/_envTest/"
+      "/tests_env/"
     ]
   },
+  "minimum-stability": "beta",
+  "prefer-stable": true,
   "require": {
-    "php": "^7.1 || ^8.0",
-    "ext-json": "*",
+    "php": "^8.0",
     "ext-mbstring": "*",
-    "berlioz/core": "^1.0",
-    "ulrichsg/getopt-php": "^3.4"
+    "berlioz/core": "^2.0",
+    "league/climate": "^3.7"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0"
+    "phpunit/phpunit": "^9.3"
   },
   "provide": {
     "psr/container-implementation": "^1.0",
-    "psr/log-implementation": "^1.0",
+    "psr/event-dispatcher-implementation": "^1.0",
     "psr/simple-cache-implementation": "^1.0"
   },
   "bin": [
@@ -47,7 +48,7 @@
   ],
   "config": {
     "berlioz": {
-      "package": "Berlioz\\CliCore\\CliCorePackage"
+      "package": "Berlioz\\Cli\\Core\\BerliozPackage"
     }
   }
 }

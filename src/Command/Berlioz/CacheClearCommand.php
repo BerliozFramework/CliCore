@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,60 +12,48 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\Command\Berlioz;
+namespace Berlioz\Cli\Core\Command\Berlioz;
 
-use Berlioz\CliCore\Command\AbstractCommand;
-use Berlioz\CliCore\Exception\CommandException;
-use Berlioz\Core\Core;
-use Berlioz\Core\CoreAwareInterface;
-use Berlioz\Core\CoreAwareTrait;
-use Berlioz\Core\Exception\BerliozException;
-use GetOpt\GetOpt;
+use Berlioz\Cli\Core\Command\AbstractCommand;
+use Berlioz\Cli\Core\Console\Environment;
 
 /**
  * Class CacheClearCommand.
- *
- * @package Berlioz\CliCore\Command\Berlioz
  */
-class CacheClearCommand extends AbstractCommand implements CoreAwareInterface
+class CacheClearCommand extends AbstractCommand
 {
-    use CoreAwareTrait;
-
     /**
-     * CacheClearCommand constructor.
-     *
-     * @param Core $core
+     * @inheritDoc
      */
-    public function __construct(Core $core)
-    {
-        $this->setCore($core);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function getShortDescription(): ?string
+    public static function getDescription(): ?string
     {
         return 'Clear cache of Berlioz Framework';
     }
 
     /**
-     * @inheritdoc
-     * @throws BerliozException
-     * @throws CommandException
+     * Clear cache.
+     *
+     * @return bool
      */
-    public function run(GetOpt $getOpt): int
+    public function clearCache(): bool
     {
-        if (empty($cacheManager = $this->getCore()->getCacheManager())) {
-            throw new CommandException('Missing cache service');
+        return $this->getApp()->getCore()->getCache()->clear();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function run(Environment $env): int
+    {
+        $env->console()->inline('Cache clear... ');
+        $env->console()->spinner();
+
+        if (true === $this->clearCache()) {
+            $env->console()->green('done!');
+            return 0;
         }
 
-        print "Cache clear of Berlioz...";
-
-        $result = $cacheManager->clear();
-
-        print sprintf(' %s!', $result ? 'done' : 'failed') . PHP_EOL;
-
-        return (int)!$result;
+        $env->console()->red('failed!');
+        return 1;
     }
 }

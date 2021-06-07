@@ -1,52 +1,56 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\CliCore\Tests\Command\Berlioz;
+namespace Berlioz\Cli\Core\Tests\Command\Berlioz;
 
-use Berlioz\CliCore\Command\Berlioz\ConfigCommand;
-use Berlioz\CliCore\Tests\FakeDefaultDirectories;
+use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\Command\Argument;
+use Berlioz\Cli\Core\Command\Berlioz\ConfigCommand;
+use Berlioz\Cli\Core\Command\CommandDeclaration;
+use Berlioz\Cli\Core\Console\Console;
+use Berlioz\Cli\Core\Console\Environment;
+use Berlioz\Cli\Core\Tests\FakeDefaultDirectories;
 use Berlioz\Core\Core;
 use GetOpt\GetOpt;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCommandTest extends TestCase
 {
-    public function test()
+    public function testGetDescription()
     {
-        $core = new Core(new FakeDefaultDirectories(), false);
+        $this->assertNotNull(ConfigCommand::getDescription());
+    }
 
-        $command = new ConfigCommand($core);
+    public function testGetHelp()
+    {
+        $this->assertNull(ConfigCommand::getHelp());
+    }
 
-        $this->assertNotNull($command::getShortDescription());
+    public function testRun()
+    {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
+        $command = new ConfigCommand($app);
+        $console = new Console();
+        $console->output->defaultTo('buffer');
+        $console->getArgumentsManager()->add('filter', []);
 
-        $getOpt = new GetOpt();
-        $getOpt->addOptions($command::getOptions());
+        $result =$command->run(
+            new Environment(
+                $console,
+                new CommandDeclaration('berlioz:config', ConfigCommand::class, [new Argument('filter')])
+            )
+        );
 
-        ob_start();
-        $result = $command->run($getOpt);
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals(0, $result);
-        $this->assertStringContainsString('"berlioz": {', $output);
-
-
-        ob_start();
-        $getOpt->process('-f "berlioz.debug.enable"');
-        $result = $command->run($getOpt);
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        $this->assertEquals(0, $result);
-        $this->assertEquals('false', $output);
+        $this->assertSame(0, $result);
+        $this->assertStringContainsString('"berlioz": {', $console->output->get('buffer')->get());
     }
 }

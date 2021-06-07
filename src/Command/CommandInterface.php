@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,26 +12,15 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\Command;
+namespace Berlioz\Cli\Core\Command;
 
-use GetOpt\GetOpt;
-use GetOpt\Operand;
-use GetOpt\Option;
+use Berlioz\Cli\Core\Console\Environment;
 
 /**
  * Interface CommandInterface.
- *
- * @package Berlioz\CliCore\Command
  */
 interface CommandInterface
 {
-    /**
-     * Get short description.
-     *
-     * @return string|null
-     */
-    public static function getShortDescription(): ?string;
-
     /**
      * Get description.
      *
@@ -40,31 +29,18 @@ interface CommandInterface
     public static function getDescription(): ?string;
 
     /**
-     * Get options.
+     * Get help.
      *
-     * Must return an array of options.
-     *
-     * @return Option[]
-     * @see http://getopt-php.github.io/getopt-php/options.html
+     * @return string|null
      */
-    public static function getOptions(): array;
-
-    /**
-     * Get operands.
-     *
-     * Must return an array of operands.
-     *
-     * @return Operand[]
-     * @see http://getopt-php.github.io/getopt-php/operands.html
-     */
-    public static function getOperands(): array;
+    public static function getHelp(): ?string;
 
     /**
      * Run command.
      *
-     * @param GetOpt $getOpt
+     * @param Environment $env
      *
      * @return int
      */
-    public function run(GetOpt $getOpt): int;
+    public function run(Environment $env): int;
 }

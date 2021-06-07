@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,25 +12,26 @@
 
 declare(strict_types=1);
 
-namespace Berlioz\CliCore\Command;
+namespace Berlioz\Cli\Core\Command;
+
+use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\App\CliAppAwareInterface;
+use Berlioz\Cli\Core\App\CliAppAwareTrait;
 
 /**
  * Class AbstractCommand.
- *
- * @package Berlioz\CliCore\Command
  */
-abstract class AbstractCommand implements CommandInterface
+abstract class AbstractCommand implements CliAppAwareInterface, CommandInterface
 {
-    /**
-     * @inheritdoc
-     */
-    public static function getShortDescription(): ?string
+    use CliAppAwareTrait;
+
+    public function __construct(CliApp $app)
     {
-        return null;
+        $this->setApp($app);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public static function getDescription(): ?string
     {
@@ -38,18 +39,22 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public static function getOptions(): array
+    public static function getHelp(): ?string
     {
-        return [];
+        return null;
     }
 
     /**
-     * @inheritdoc
+     * Get service.
+     *
+     * @param string $id
+     *
+     * @return mixed
      */
-    public static function getOperands(): array
+    protected function get(string $id): mixed
     {
-        return [];
+        return $this->app->get($id);
     }
 }

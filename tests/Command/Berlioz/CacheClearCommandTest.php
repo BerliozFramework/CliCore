@@ -1,32 +1,67 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\CliCore\Tests\Command\Berlioz;
+namespace Berlioz\Cli\Core\Tests\Command\Berlioz;
 
-use Berlioz\CliCore\Command\Berlioz\CacheClearCommand;
-use Berlioz\CliCore\Tests\FakeDefaultDirectories;
+use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\Command\Berlioz\CacheClearCommand;
+use Berlioz\Cli\Core\Command\CommandDeclaration;
+use Berlioz\Cli\Core\Console\Console;
+use Berlioz\Cli\Core\Console\Environment;
+use Berlioz\Cli\Core\Tests\FakeDefaultDirectories;
 use Berlioz\Core\Core;
-use GetOpt\GetOpt;
 use PHPUnit\Framework\TestCase;
 
 class CacheClearCommandTest extends TestCase
 {
-    public function test()
+    public function testGetDescription()
     {
-        $core = new Core(new FakeDefaultDirectories(), false);
+        $this->assertNotNull(CacheClearCommand::getDescription());
+    }
 
-        $command = new CacheClearCommand($core);
+    public function testGetHelp()
+    {
+        $this->assertNull(CacheClearCommand::getHelp());
+    }
 
-        $this->assertNotNull($command::getShortDescription());
-        $this->assertEquals(0, $command->run(new GetOpt()));
+    public function testClearCache()
+    {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
+        $app->getCore()->getCache()->set('foo', 'bar');
+        $command = new CacheClearCommand($app);
+
+        $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
+        $this->assertTrue($command->clearCache());
+        $this->assertNull($app->getCore()->getCache()->get('foo'));
+    }
+
+    public function testRun()
+    {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
+        $app->getCore()->getCache()->set('foo', 'bar');
+        $command = new CacheClearCommand($app);
+        $console = new Console();
+        $console->output->defaultTo('buffer');
+
+        $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
+        $this->assertSame(
+            0,
+            $command->run(
+                new Environment(
+                    $console,
+                    new CommandDeclaration('berlioz:cache-clear', CacheClearCommand::class)
+                )
+            )
+        );
+        $this->assertNull($app->getCore()->getCache()->get('foo'));
     }
 }

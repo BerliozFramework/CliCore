@@ -1,36 +1,54 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2020 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\CliCore\Tests\Command;
+namespace Berlioz\Cli\Core\Tests\Command;
 
-use Berlioz\CliCore\Command\AbstractCommand;
-use GetOpt\GetOpt;
+use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\Command\AbstractCommand;
+use Berlioz\Cli\Core\Command\CommandDeclaration;
+use Berlioz\Cli\Core\Console\Console;
+use Berlioz\Cli\Core\Console\Environment;
+use Berlioz\Cli\Core\Tests\FakeDefaultDirectories;
+use Berlioz\Core\Core;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class AbstractCommandTest extends TestCase
 {
-    public function test()
+    public function testGetDescription()
     {
-        $command = new class extends AbstractCommand {
-            public function run(GetOpt $getOpt): int
-            {
-                return 0;
-            }
-        };
+        $this->assertNull(FakeCommand::getDescription());
+    }
 
-        $this->assertNull($command::getDescription());
-        $this->assertNull($command::getShortDescription());
-        $this->assertEmpty($command::getOptions());
-        $this->assertEmpty($command::getOperands());
-        $this->assertEquals(0, $command->run(new GetOpt()));
+    public function testGetHelp()
+    {
+        $this->assertNull(FakeCommand::getHelp());
+    }
+
+    public function testRun()
+    {
+        $declaration = new CommandDeclaration('foo', FakeCommand::class, []);
+        $command = new FakeCommand(new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
+
+        $this->assertSame(0, $command->run(new Environment(new Console(), $declaration)));
+    }
+
+    public function testGet()
+    {
+        $command = new FakeCommand($app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
+        $reflectionClass = new ReflectionClass(AbstractCommand::class);
+        $reflectionMethod = $reflectionClass->getMethod('get');
+        $reflectionMethod->setAccessible(true);
+
+        $this->assertSame($app, $reflectionMethod->invoke($command, 'app'));
     }
 }
