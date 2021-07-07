@@ -15,12 +15,9 @@ declare(strict_types=1);
 namespace Berlioz\Cli\Core\App;
 
 use Berlioz\Cli\Core\Command\CommandHandler;
-use Berlioz\Cli\Core\Container\ServiceProvider;
 use Berlioz\Cli\Core\Exception\CliException;
-use Berlioz\Config\Adapter\JsonAdapter;
-use Berlioz\Config\Config;
-use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Core\App\AbstractApp;
+use Berlioz\Core\Core;
 use Berlioz\ServiceContainer\Inflector\Inflector;
 
 /**

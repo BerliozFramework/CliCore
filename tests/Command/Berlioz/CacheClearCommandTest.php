@@ -37,7 +37,8 @@ class CacheClearCommandTest extends TestCase
     {
         $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
         $app->getCore()->getCache()->set('foo', 'bar');
-        $command = new CacheClearCommand($app);
+        $command = new CacheClearCommand();
+        $command->setApp($app);
 
         $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
         $this->assertTrue($command->clearCache());
@@ -48,7 +49,8 @@ class CacheClearCommandTest extends TestCase
     {
         $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
         $app->getCore()->getCache()->set('foo', 'bar');
-        $command = new CacheClearCommand($app);
+        $command = new CacheClearCommand();
+        $command->setApp($app);
         $console = new Console();
         $console->output->defaultTo('buffer');
 

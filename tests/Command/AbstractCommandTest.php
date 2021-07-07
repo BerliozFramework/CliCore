@@ -37,14 +37,16 @@ class AbstractCommandTest extends TestCase
     public function testRun()
     {
         $declaration = new CommandDeclaration('foo', FakeCommand::class, []);
-        $command = new FakeCommand(new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
+        $command = new FakeCommand();
+        $command->setApp(new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
 
         $this->assertSame(0, $command->run(new Environment(new Console(), $declaration)));
     }
 
     public function testGet()
     {
-        $command = new FakeCommand($app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
+        $command = new FakeCommand();
+        $command->setApp($app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false)));
         $reflectionClass = new ReflectionClass(AbstractCommand::class);
         $reflectionMethod = $reflectionClass->getMethod('get');
         $reflectionMethod->setAccessible(true);

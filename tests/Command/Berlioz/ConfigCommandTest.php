@@ -20,7 +20,6 @@ use Berlioz\Cli\Core\Console\Console;
 use Berlioz\Cli\Core\Console\Environment;
 use Berlioz\Cli\Core\Tests\FakeDefaultDirectories;
 use Berlioz\Core\Core;
-use GetOpt\GetOpt;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCommandTest extends TestCase
@@ -38,12 +37,13 @@ class ConfigCommandTest extends TestCase
     public function testRun()
     {
         $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
-        $command = new ConfigCommand($app);
+        $command = new ConfigCommand();
+        $command->setApp($app);
         $console = new Console();
         $console->output->defaultTo('buffer');
         $console->getArgumentsManager()->add('filter', []);
 
-        $result =$command->run(
+        $result = $command->run(
             new Environment(
                 $console,
                 new CommandDeclaration('berlioz:config', ConfigCommand::class, [new Argument('filter')])
