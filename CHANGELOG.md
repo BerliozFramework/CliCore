@@ -10,6 +10,10 @@ use [Keep a Changelog] (http://keepachangelog.com/).
 
 - Declare `CliApp` inflector to the service container in constructor
 
+### Removed
+
+- Remove `CliApp` dependency in constructor of `AbstractCommand`, inflector used instead
+
 ## [2.0.0-beta1] - 2021-06-07
 
 ### Added

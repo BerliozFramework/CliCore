@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Berlioz\Cli\Core\Command;
 
-use Berlioz\Cli\Core\App\CliApp;
 use Berlioz\Cli\Core\App\CliAppAwareInterface;
 use Berlioz\Cli\Core\App\CliAppAwareTrait;
 
@@ -24,11 +23,6 @@ use Berlioz\Cli\Core\App\CliAppAwareTrait;
 abstract class AbstractCommand implements CliAppAwareInterface, CommandInterface
 {
     use CliAppAwareTrait;
-
-    public function __construct(CliApp $app)
-    {
-        $this->setApp($app);
-    }
 
     /**
      * @inheritDoc
