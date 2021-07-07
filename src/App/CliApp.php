@@ -21,13 +21,31 @@ use Berlioz\Config\Adapter\JsonAdapter;
 use Berlioz\Config\Config;
 use Berlioz\Config\Exception\ConfigException;
 use Berlioz\Core\App\AbstractApp;
-use Berlioz\ServiceContainer\Container;
+use Berlioz\ServiceContainer\Inflector\Inflector;
 
 /**
  * Class CliApp.
  */
 class CliApp extends AbstractApp
 {
+    /**
+     * HttpApp constructor.
+     *
+     * @param Core|null $core
+     */
+    public function __construct(?Core $core = null)
+    {
+        parent::__construct($core);
+
+        $this->getCore()->getContainer()->addInflector(
+            new Inflector(
+                CliAppAwareInterface::class,
+                'setApp',
+                ['app' => $this]
+            )
+        );
+    }
+
     /**
      * @inheritDoc
      */
