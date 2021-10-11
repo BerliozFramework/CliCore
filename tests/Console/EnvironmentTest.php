@@ -46,6 +46,16 @@ class EnvironmentTest extends TestCase
         $environment->getArgument('qux');
     }
 
+    public function testGetArgumentMultiple()
+    {
+        $environment = new Environment($console = new Console(), new CommandDeclaration('foo', FakeCommand::class));
+        $console->arguments->add(['foo' => ['prefix' => 'f'], 'bar' => ['longPrefix' => 'bar']]);
+        $console->arguments->parse(['exec', 'command', '-f', 'value1', '-f', 'value2']);
+
+        $this->assertEquals('value2', $environment->getArgument('foo'));
+        $this->assertEquals(['value1', 'value2'], $environment->getArgumentMultiple('foo'));
+    }
+
     public function testGetArguments()
     {
         $environment = new Environment($console = new Console(), new CommandDeclaration('foo', FakeCommand::class));

@@ -66,6 +66,23 @@ class Environment
     }
 
     /**
+     * Get argument multiple values.
+     *
+     * @param string $name
+     *
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    public function getArgumentMultiple(string $name): array
+    {
+        if (false === $this->console->arguments->exists($name)) {
+            throw InvalidArgumentException::unknown($name, $this->command->getClass());
+        }
+
+        return $this->console->arguments->getArray($name);
+    }
+
+    /**
      * Is argument defined?
      *
      * @param string $name
