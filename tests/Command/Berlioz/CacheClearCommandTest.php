@@ -13,6 +13,7 @@
 namespace Berlioz\Cli\Core\Tests\Command\Berlioz;
 
 use Berlioz\Cli\Core\App\CliApp;
+use Berlioz\Cli\Core\Command\Argument;
 use Berlioz\Cli\Core\Command\Berlioz\CacheClearCommand;
 use Berlioz\Cli\Core\Command\CommandDeclaration;
 use Berlioz\Cli\Core\Console\Console;
@@ -37,12 +38,60 @@ class CacheClearCommandTest extends TestCase
     {
         $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
         $app->getCore()->getCache()->set('foo', 'bar');
+        $app->getCore()->getFilesystem()->write('cache://foo', 'foo content');
         $command = new CacheClearCommand();
         $command->setApp($app);
 
         $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://foo'));
+
         $this->assertTrue($command->clearCache());
+
         $this->assertNull($app->getCore()->getCache()->get('foo'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://foo'));
+    }
+
+    public function testClearCache_all()
+    {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
+        $app->getCore()->getCache()->set('foo', 'bar');
+        $app->getCore()->getFilesystem()->write('cache://foo', 'foo content');
+        $app->getCore()->getFilesystem()->write('cache://bar/bar', 'bar content');
+        $command = new CacheClearCommand();
+        $command->setApp($app);
+
+        $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://foo'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://bar/bar'));
+
+        $this->assertTrue($command->clearCache(true));
+
+        $this->assertNull($app->getCore()->getCache()->get('foo'));
+        $this->assertFalse($app->getCore()->getFilesystem()->fileExists('cache://foo'));
+        $this->assertFalse($app->getCore()->getFilesystem()->fileExists('cache://bar/bar'));
+    }
+
+    public function testClearCache_list()
+    {
+        $app = new CliApp(new Core(new FakeDefaultDirectories(), cache: false));
+        $app->getCore()->getCache()->set('foo', 'bar');
+        $app->getCore()->getFilesystem()->write('cache://bar/bar', 'bar content');
+        $app->getCore()->getFilesystem()->write('cache://baz/baz', 'baz content');
+        $app->getCore()->getFilesystem()->write('cache://qux/qux', 'bux content');
+        $command = new CacheClearCommand();
+        $command->setApp($app);
+
+        $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://bar/bar'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://baz/baz'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://qux/qux'));
+
+        $this->assertTrue($command->clearCache(['bar', 'qux']));
+
+        $this->assertNull($app->getCore()->getCache()->get('foo'));
+        $this->assertFalse($app->getCore()->getFilesystem()->fileExists('cache://bar/bar'));
+        $this->assertTrue($app->getCore()->getFilesystem()->fileExists('cache://baz/baz'));
+        $this->assertFalse($app->getCore()->getFilesystem()->fileExists('cache://qux/qux'));
     }
 
     public function testRun()
@@ -53,6 +102,24 @@ class CacheClearCommandTest extends TestCase
         $command->setApp($app);
         $console = new Console();
         $console->output->defaultTo('buffer');
+        $console->getArgumentsManager()->add(
+            'all',
+            [
+                'name' => 'all',
+                'longPrefix' => 'all',
+                'description' => 'All caches directories',
+                'noValue' => true,
+                'castTo' => 'bool'
+            ]
+        );
+        $console->getArgumentsManager()->add(
+            'directory',
+            [
+                'name' => 'directory',
+                'description' => 'Directories name',
+                'castTo' => 'string'
+            ]
+        );
 
         $this->assertEquals('bar', $app->getCore()->getCache()->get('foo'));
         $this->assertSame(
@@ -60,7 +127,20 @@ class CacheClearCommandTest extends TestCase
             $command->run(
                 new Environment(
                     $console,
-                    new CommandDeclaration('berlioz:cache-clear', CacheClearCommand::class)
+                    new CommandDeclaration(
+                        'berlioz:cache-clear',
+                        CacheClearCommand::class,
+                        [
+                            new Argument(
+                                name: 'all',
+                                longPrefix: 'all',
+                                description: 'All caches directories',
+                                noValue: true,
+                                castTo: 'bool'
+                            ),
+                            new Argument(name: 'directory', description: 'Directories name', castTo: 'string')
+                        ],
+                    )
                 )
             )
         );
