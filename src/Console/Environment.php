@@ -24,7 +24,8 @@ class Environment
 {
     public function __construct(
         protected Console $console,
-        protected CommandDeclaration $command
+        protected CommandDeclaration $command,
+        protected ?array $argv = null,
     ) {
     }
 
@@ -97,6 +98,6 @@ class Environment
             throw InvalidArgumentException::unknown($name, $this->command->getClass());
         }
 
-        return $this->console->arguments->defined($name, $argv);
+        return $this->console->arguments->defined($name, $argv ?? $this->argv);
     }
 }

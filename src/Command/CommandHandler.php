@@ -87,7 +87,7 @@ class CommandHandler
             $this->addArguments($command);
             $this->console->getArgumentsManager()->parse($argv);
 
-            return $commandObj->run(new Environment($this->console, $command));
+            return $commandObj->run(new Environment($this->console, $command, $argv));
         } catch (Throwable $exception) {
             $this->printException($exception);
             return 1;

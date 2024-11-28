@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. This projec
 to [Semantic Versioning] (http://semver.org/). For change log format,
 use [Keep a Changelog] (http://keepachangelog.com/).
 
+## [2.2.1] - 2024-11-28
+
+### Fixed
+
+- `Environment::isArgumentDefined()` return false in case of handler called with $argv value
+
 ## [2.2.0] - 2022-12-02
 
 ### Added
