@@ -22,7 +22,7 @@ class Parser extends CLImateParser
     /**
      * @inheritDoc
      */
-    protected function getCommandAndArguments(array $argv = null): array
+    protected function getCommandAndArguments(?array $argv = null): array
     {
         // If no $argv is provided then use the global PHP defined $argv.
         if (is_null($argv)) {
